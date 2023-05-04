@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/salary-counter/static/css/main.bca69540.css",
+    "main.js": "/salary-counter/static/js/main.833b7a03.js",
+    "static/js/787.2fbc9515.chunk.js": "/salary-counter/static/js/787.2fbc9515.chunk.js",
+    "index.html": "/salary-counter/index.html",
+    "main.bca69540.css.map": "/salary-counter/static/css/main.bca69540.css.map",
+    "main.833b7a03.js.map": "/salary-counter/static/js/main.833b7a03.js.map",
+    "787.2fbc9515.chunk.js.map": "/salary-counter/static/js/787.2fbc9515.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bca69540.css",
+    "static/js/main.833b7a03.js"
+  ]
+}
