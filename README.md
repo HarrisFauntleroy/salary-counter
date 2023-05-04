@@ -1,4 +1,4 @@
-# 🌐 Simple Site
+# 💰 Salary Counter
 
 Simple Site is a minimalistic, responsive web application built with React and Bootstrap 🎨. It serves as a starting point for developers looking to create a modern, user-friendly website with ease.
 
@@ -16,8 +16,8 @@ Simple Site is a minimalistic, responsive web application built with React and B
 Clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/HarrisFauntleroy/simple-site.git
-cd simple-site
+git clone https://github.com/HarrisFauntleroy/salary-counter.git
+cd salary-counter
 yarn install
 ```
 

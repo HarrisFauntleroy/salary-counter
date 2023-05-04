@@ -1,11 +1,11 @@
 {
-  "name": "simple-site",
+  "name": "salary-counter",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://HarrisFauntleroy.github.io/simple-site",
+  "homepage": "https://HarrisFauntleroy.github.io/salary-counter",
   "repository": {
     "type": "git",
-    "url": "https://github.com/HarrisFauntleroy/simple-site"
+    "url": "https://github.com/HarrisFauntleroy/salary-counter"
   },
   "license": "MIT",
   "author": {
