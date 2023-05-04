@@ -1,8 +1,5 @@
 import { SetStateAction, memo, useEffect, useState } from "react";
 
-import divide from "lodash/divide";
-import multiply from "lodash/multiply";
-
 import {
   AbsoluteCenter,
   Center,
@@ -135,15 +132,15 @@ export function App() {
       );
 
       const timeElapsedInSeconds = differenceInSeconds(start, new Date());
-      const currentEarnings = multiply(earningsPerSecond, timeElapsedInSeconds);
+      const currentEarnings = earningsPerSecond * timeElapsedInSeconds;
 
       if (isAfter(new Date(), end)) {
         setText(
           `🏝️ End of the day, total earned: $${Number(
-            divide(multiply(earningsPerHour, hoursPerWeek), 5)
+            (earningsPerHour * hoursPerWeek) / 5
           )}`
         );
-        setCounter(Number(divide(multiply(earningsPerHour, hoursPerWeek), 5)));
+        setCounter(Number((earningsPerHour * hoursPerWeek) / 5));
       } else {
         setText("Working... 👨‍🌾");
         setCounter(Math.abs(Number(currentEarnings)));
