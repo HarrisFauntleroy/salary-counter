@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, memo, useEffect, useState } from "react";
 
 import divide from "lodash/divide";
 import multiply from "lodash/multiply";
@@ -17,11 +17,11 @@ import {
 } from "@chakra-ui/react";
 import { differenceInSeconds, isAfter } from "date-fns";
 import { useTranslation } from "react-i18next";
-import { animated, useSpring } from "react-spring";
+import { SpringValue, animated, useSpring } from "react-spring";
 
 import "./App.css";
 
-export function App() {
+function useIncomeCalculator() {
   const [income, setIncome] = useState(125000);
   const [frequency, setFrequency] = useState("annually");
   const [text, setText] = useState("");
@@ -30,6 +30,52 @@ export function App() {
   const [counter, setCounter] = useState(0);
   const [weeksWorked, setWeeksWorked] = useState(52);
   const [hoursPerWeek, setHoursPerWeek] = useState(38);
+
+  return {
+    income,
+    setIncome,
+    frequency,
+    setFrequency,
+    text,
+    setText,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    counter,
+    setCounter,
+    weeksWorked,
+    setWeeksWorked,
+    hoursPerWeek,
+    setHoursPerWeek,
+  };
+}
+
+const AnimatedCounter = memo(
+  ({ counter }: { counter: SpringValue<number> }) => (
+    <animated.div>{counter.to((val) => val.toFixed(2))}</animated.div>
+  )
+);
+
+export function App() {
+  const {
+    income,
+    setIncome,
+    frequency,
+    setFrequency,
+    text,
+    setText,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    counter,
+    setCounter,
+    weeksWorked,
+    setWeeksWorked,
+    hoursPerWeek,
+    setHoursPerWeek,
+  } = useIncomeCalculator();
 
   const handleIncomeChange = (e: {
     target: { value: SetStateAction<string> };
@@ -69,10 +115,10 @@ export function App() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const earningsPerWeek = divide(income, weeksWorked);
-      const earningsPerHour = divide(earningsPerWeek, hoursPerWeek);
-      const earningsPerMinute = divide(earningsPerHour, 60);
-      const earningsPerSecond = divide(earningsPerMinute, 60);
+      const earningsPerWeek = income / weeksWorked;
+      const earningsPerHour = earningsPerWeek / hoursPerWeek;
+      const earningsPerMinute = earningsPerHour / 60;
+      const earningsPerSecond = earningsPerMinute / 60;
 
       const currentDate = new Date();
       const start = new Date(
@@ -91,8 +137,6 @@ export function App() {
       const timeElapsedInSeconds = differenceInSeconds(start, new Date());
       const currentEarnings = multiply(earningsPerSecond, timeElapsedInSeconds);
 
-      // It could possibly reflect the time of day using emojis as well such as sunrise, sunset, morning, evening, night, sleeping, working, etc,
-
       if (isAfter(new Date(), end)) {
         setText(
           `🏝️ End of the day, total earned: $${Number(
@@ -107,7 +151,16 @@ export function App() {
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [income, frequency, startTime, endTime, weeksWorked, hoursPerWeek]);
+  }, [
+    income,
+    frequency,
+    startTime,
+    endTime,
+    weeksWorked,
+    hoursPerWeek,
+    setText,
+    setCounter,
+  ]);
 
   const props = useSpring({
     from: { counter: 0 },
@@ -123,10 +176,7 @@ export function App() {
           <Stack>
             <Flex>
               <Heading style={{ display: "flex", flexDirection: "row" }}>
-                $
-                <animated.div>
-                  {props.counter.to((val) => val.toFixed(2))}
-                </animated.div>
+                $<AnimatedCounter counter={props.counter} />
               </Heading>
               {t("Translated Text")}
             </Flex>
