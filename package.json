@@ -1,0 +1,140 @@
+{
+  "name": "simple-site",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://HarrisFauntleroy.github.io/simple-site",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HarrisFauntleroy/simple-site"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Harris Fauntleroy",
+    "url": "https://github.com/HarrisFauntleroy"
+  },
+  "scripts": {
+    "build": "react-scripts build",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build",
+    "eject": "react-scripts eject",
+    "lint": "yarn eslint .",
+    "lint:fix": "yarn eslint --fix .",
+    "format": "prettier --write .",
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "type-check": "tsc --noEmit",
+    "watch": "yarn type-check -- --watch"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es6": true,
+      "jest": true,
+      "node": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "settings": {
+      "import/resolver": {
+        "typescript": true,
+        "node": true
+      },
+      "react": {
+        "version": "detect"
+      }
+    },
+    "plugins": [
+      "@typescript-eslint",
+      "simple-import-sort",
+      "import",
+      "sonarjs",
+      "jsx-a11y",
+      "prettier"
+    ],
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "plugin:@typescript-eslint/recommended",
+      "eslint:recommended",
+      "plugin:import/typescript",
+      "plugin:import/recommended",
+      "plugin:sonarjs/recommended",
+      "plugin:jsx-a11y/recommended",
+      "plugin:storybook/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "import/extensions": "off",
+      "simple-import-sort/imports": [
+        "off",
+        {
+          "groups": [
+            [
+              "^react$"
+            ],
+            [
+              "^(ui|common|database|database/generated/prisma-client)$"
+            ],
+            [
+              "^[./]"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.6.1",
+    "@emotion/react": "^11.10.8",
+    "@emotion/styled": "^11.10.8",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
+    "@types/react": "^18.0.37",
+    "@types/react-dom": "^18.0.11",
+    "bootstrap": "^5.2.3",
+    "date-fns": "^2.30.0",
+    "framer-motion": "^10.12.7",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^12.2.2",
+    "react-scripts": "5.0.1",
+    "react-spring": "^9.7.1",
+    "sass": "^1.62.0",
+    "typescript": "^5.0.4",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.38.0",
+    "eslint-config-next": "13.3.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-sonarjs": "0.19.0",
+    "eslint-plugin-storybook": "^0.6.11",
+    "eslint-watch": "^8.0.0",
+    "gh-pages": "^5.0.0",
+    "prettier": "^2.8.7"
+  }
+}
