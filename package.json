@@ -19,12 +19,12 @@
     "eject": "react-scripts eject",
     "format": "prettier --write .",
     "lint": "yarn eslint .",
+    "lint-staged": "lint-staged",
     "lint:fix": "yarn eslint --fix .",
+    "prepare": "husky install",
     "start": "react-scripts start",
     "test": "react-scripts test",
     "type-check": "tsc --noEmit",
-    "lint-staged": "lint-staged",
-    "prepare": "husky install",
     "watch": "yarn type-check -- --watch"
   },
   "husky": {
