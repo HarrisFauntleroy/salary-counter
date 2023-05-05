@@ -17,13 +17,21 @@
     "predeploy": "yarn build",
     "deploy": "gh-pages -d build",
     "eject": "react-scripts eject",
+    "format": "prettier --write .",
     "lint": "yarn eslint .",
     "lint:fix": "yarn eslint --fix .",
-    "format": "prettier --write .",
     "start": "react-scripts start",
     "test": "react-scripts test",
     "type-check": "tsc --noEmit",
+    "lint-staged": "lint-staged",
+    "prepare": "husky install",
     "watch": "yarn type-check -- --watch"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn deploy"
+    }
   },
   "browserslist": {
     "production": [
@@ -63,8 +71,6 @@
       "prettier"
     ],
     "extends": [
-      "react-app",
-      "react-app/jest",
       "plugin:@typescript-eslint/recommended",
       "eslint:recommended",
       "plugin:import/typescript",
@@ -106,9 +112,6 @@
     "@emotion/styled": "^11.10.8",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^29.5.0",
-    "@types/node": "^18.15.11",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "bootstrap": "^5.2.3",
@@ -119,21 +122,33 @@
     "react-i18next": "^12.2.2",
     "react-scripts": "5.0.1",
     "react-spring": "^9.7.1",
-    "sass": "^1.62.0",
+    "sass": "^1.62.1",
     "typescript": "^5.0.4",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.58.0",
     "eslint": "^8.38.0",
-    "eslint-config-next": "13.3.0",
     "eslint-config-prettier": "^8.6.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-sonarjs": "0.19.0",
     "eslint-plugin-storybook": "^0.6.11",
-    "eslint-watch": "^8.0.0",
     "gh-pages": "^5.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
     "prettier": "^2.8.7"
+  },
+  "lintStaged": {
+    "*.{js,jsx,ts,tsx}": [
+      "yarn eslint --fix",
+      "yarn format",
+      "git add"
+    ]
   }
 }
