@@ -1,15 +1,10 @@
 # 💰 Salary Counter
 
-Simple Site is a minimalistic, responsive web application built with React and Bootstrap 🎨. It serves as a starting point for developers looking to create a modern, user-friendly website with ease.
+💰 A React app that displays your real-time earnings throughout the day.
 
 ## ✨ Features
 
-- React 18 with functional components and hooks 🪝
-- TypeScript for static typing and better code organization 📚
-- Bootstrap 5 for responsive styling 📱
-- ESlint with Prettier for consistent code formatting 🖋️
-- Testing using Jest and React Testing Library 🔍
-- GitHub Pages deployment support 🚀
+TODO
 
 ## 🚀 Getting Started
 
