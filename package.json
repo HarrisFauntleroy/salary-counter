@@ -33,6 +33,13 @@
       "pre-push": "yarn deploy"
     }
   },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "yarn lint:fix",
+      "yarn format",
+      "git add"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -144,11 +151,5 @@
     "lint-staged": "^13.2.2",
     "prettier": "^2.8.7"
   },
-  "lintStaged": {
-    "*.{js,jsx,ts,tsx}": [
-      "yarn eslint --fix",
-      "yarn format",
-      "git add"
-    ]
-  }
+  "packageManager": "yarn@3.5.0"
 }
