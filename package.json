@@ -29,15 +29,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn deploy"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "yarn lint:fix",
-      "yarn format",
-      "git add"
+      "yarn format"
     ]
   },
   "browserslist": {
