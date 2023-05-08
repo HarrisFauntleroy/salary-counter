@@ -1,14 +1,14 @@
 name: CI
 
 on:
-  push:
-    branches-ignore: [main]
-    # Remove the line above to run when pushing to master
   pull_request:
-    branches: [main]
-    
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
-  main:
+  build-test-lint:
     timeout-minutes: 15
     runs-on: ubuntu-latest
 
@@ -29,10 +29,10 @@ jobs:
 
       - name: Build
         run: yarn build
-        
+
       - name: Test
         run: yarn build
-        
+
       - name: Lint
         uses: github/super-linter@v4
         env:
