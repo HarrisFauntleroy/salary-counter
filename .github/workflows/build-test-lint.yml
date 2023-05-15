@@ -31,7 +31,7 @@ jobs:
         run: yarn build
 
       - name: Test
-        run: yarn build
+        run: yarn test
 
       - name: Lint
         uses: github/super-linter@v4
