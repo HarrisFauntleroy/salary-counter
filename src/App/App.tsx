@@ -1,5 +1,3 @@
-import { SetStateAction, memo, useEffect, useState } from "react";
-
 import {
   AbsoluteCenter,
   Center,
@@ -13,9 +11,9 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { differenceInSeconds, isAfter } from "date-fns";
+import { SetStateAction, memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SpringValue, animated, useSpring } from "react-spring";
-
 import "./App.css";
 
 function useIncomeCalculator() {
