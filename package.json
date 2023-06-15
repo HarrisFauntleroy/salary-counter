@@ -19,7 +19,6 @@
     "eject": "react-scripts eject",
     "format": "prettier --write .",
     "lint": "yarn eslint .",
-    
     "lint:fix": "yarn eslint --fix .",
     "prepare": "husky install",
     "start": "react-scripts start",
