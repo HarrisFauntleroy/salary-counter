@@ -22,7 +22,7 @@
     "lint:fix": "yarn eslint --fix .",
     "prepare": "husky install",
     "start": "react-scripts start",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false",
     "type-check": "tsc --noEmit",
     "watch": "yarn type-check -- --watch"
   },
