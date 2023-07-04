@@ -1,21 +1,19 @@
 name: CI Actions 🤖
 
-# Controls when the action will run. Triggers the workflow on push or pull request
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
   pull_request:
-    branches:
-      - main
+    types: [opened, synchronize]
 
-# Prevents this workflow from running twice at the same time for the same ref.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group:
+    ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   continuous-integration:
+    permissions: write-all
     timeout-minutes: 15
     runs-on: ubuntu-latest
 
@@ -29,7 +27,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Install dependencies 📦
         run: yarn
@@ -42,12 +40,3 @@ jobs:
 
       - name: Test 🧪
         run: yarn test
-
-      # - name: Run Prisma migration 🗄️
-      #   run: npx prisma migrate deploy
-      #   env:
-      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      # - name: Coverage report 📊
-      #   if: success() || failure()
-      #   uses: ArtiomTr/jest-coverage-report-action@v2

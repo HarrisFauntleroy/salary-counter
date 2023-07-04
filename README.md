@@ -1,61 +1,74 @@
 # 💰 Salary Counter
 
+⚠️ WORK IN PROGRESS SIDE PROJECT ⚠️
+
 💰 A React app that displays your real-time earnings throughout the day.
 
-## ✨ Features
+[![CI Actions 🚀🤖](https://github.com/HarrisFauntleroy/salary-counter/actions/workflows/ci.yml/badge.svg)](https://github.com/HarrisFauntleroy/salary-counter/actions/workflows/ci.yml)[![Code Coverage 📊](https://github.com/HarrisFauntleroy/salary-counter/actions/workflows/coverage.yml/badge.svg)](https://github.com/HarrisFauntleroy/salary-counter/actions/workflows/coverage.yml)![GitHub commit activity](https://img.shields.io/github/commit-activity/w/HarrisFauntleroy/salary-counter?style=flat)
 
-TODO
+---
 
-## 🚀 Getting Started
+<!-- FEATURES -->
 
-Clone the repository and install the dependencies:
+## 💫 Features
 
-```bash
-git clone https://github.com/HarrisFauntleroy/salary-counter.git
-cd salary-counter
-yarn install
+- Real-time salary counter: Display your earnings by seconds, minutes, and hours.
+- Flexible input: Customize your wage, working hours, and more.
+- Visual charts: Get a visual understanding of your earnings with graphs.
+- Performance focused: Optimized for high performance and efficiency.
+
+(More features coming soon!)
+
+---
+
+<!-- LOCAL DEVELOPMENT -->
+
+## Local Development
+
+Here's how you can set up Fn Fitness in your local dev environment:
+
+### Requirements
+
+- Node >= 14
+- Docker (for running Postgres, Redis, etc.) 🐳
+
+Node is managed using Node Version Manager
+
+<a href="https://github.com/nvm-sh/logos"><img alt="nvm project logo" src="https://raw.githubusercontent.com/nvm-sh/logos/HEAD/nvm-logo-color.svg" height="50" /></a>
+
+```sh
+# Update node version
+nvm use <version>
 ```
 
-## 📜 Available Scripts
+## Installation
 
-In the project directory, you can run:
+**Yarn**
 
-### `yarn start`
+```sh
+# Install dependencies
+yarn
+```
 
-Runs the app in development mode 🛠️.
-Open http://localhost:3000 to view it in the browser.
+### Commands
 
-The page will reload if you make edits 🔄.
-Lint errors will also appear in the console 🚨.
+```sh
+# Run local server
+yarn dev
+```
 
-### `yarn test`
+---
 
-Launches the test runner in interactive watch mode 🔬. See Running Tests for more information.
+<!-- LICENSE -->
 
-### `yarn build`
+## **License** ⚖️
 
-Builds the app for production 🏗️ to the build folder. It correctly bundles React in production mode and optimizes the build for the best performance 🚀.
+Distributed under the MIT License. See `LICENSE` for more information.
 
-### `yarn deploy`
+---
 
-Builds and deploys the app to GitHub Pages 🌐. Ensure that the "homepage" field in package.json is set to your desired GitHub Pages URL.
+<!-- DISCLAIMER -->
 
-### `yarn type-check`
+## **Disclaimer** 🚨
 
-🔍 Performs a TypeScript type check on your code without emitting any output files. This script helps ensure your code is free of type-related issues.
-
-### `yarn watch`
-
-👁️ Runs the TypeScript type checker in watch mode. It will continuously watch for changes in your code and perform type checking as you edit your files. This provides instant feedback on any type-related issues.
-
-### `yarn lint`
-
-🔧 Runs ESLint to analyze your code and identify potential issues according to your ESLint configuration. This script helps you maintain a consistent code style and catch possible errors.
-
-### `yarn lint:fix`
-
-🛠️ Automatically fixes any fixable issues found by ESLint in your code. This script helps you quickly resolve linting issues and maintain a consistent code style.
-
-### `yarn format`
-
-🎨 Runs Prettier to format your code according to your Prettier configuration. This script ensures that your code is consistently formatted and easy to read.
+This software is currently a work in progress and is considered in ALPHA state. Features will appear and disappear, APIs will be changed, bugs will be introduced, your feedback is always welcome! 🚧
