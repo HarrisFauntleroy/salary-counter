@@ -2,14 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Real-Time Salary Calculator</title>
     <style>
+      :root {
+        --main-bg-color: #f3f4f6;
+        --container-bg-color: #fff;
+      }
+        * {
+            box-sizing: border-box;
+        }
       body {
         height: 100vh;
         width: 100vw;
         font-family: "Arial", sans-serif;
-        background-color: #f3f4f6;
+        background-color: var(--main-bg-color);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -17,8 +24,8 @@
       }
       .container {
         margin: auto;
-        max-width: 300px;
-        background-color: #fff;
+        max-width: 400px;
+        background-color: var(--container-bg-color);
         padding: 16px;
         border-radius: 5px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -39,8 +46,10 @@
   <body>
     <div class="container">
       <h1>Real-Time Salary Calculator</h1>
+      <p>Enter your salary and work hours to get real-time calculations.</p>
       <label for="salary">Enter your annual salary:</label>
       <input
+        aria-label="Annual Salary"
         type="number"
         id="salary"
         placeholder="Annual Salary"
@@ -90,7 +99,8 @@
             document.getElementById(field).textContent = "Invalid input";
           });
         } else {
-          const hourlyRate = annualSalary / (WEEKS_IN_YEAR * WORK_HOURS_IN_WEEK);
+          const hourlyRate =
+            annualSalary / (WEEKS_IN_YEAR * WORK_HOURS_IN_WEEK);
           calculations = {
             monthly: (annualSalary / 12).toFixed(2),
             weekly: (annualSalary / WEEKS_IN_YEAR).toFixed(2),
@@ -110,14 +120,21 @@
             startTime.setHours(startHours, startMinutes, 0, 0);
             finishTime.setHours(finishHours, finishMinutes, 0, 0);
 
-            const totalTime = (finishTime - startTime) / (MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR);
+            const totalTime =
+              (finishTime - startTime) /
+              (MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR);
 
             const elapsedTime = Math.min(
-              Math.max(0, (now - startTime) / (MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR)),
+              Math.max(
+                0,
+                (now - startTime) /
+                  (MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR)
+              ),
               totalTime
             );
 
-            const hourlyRate = annualSalary / (WEEKS_IN_YEAR * WORK_HOURS_IN_WEEK);
+            const hourlyRate =
+              annualSalary / (WEEKS_IN_YEAR * WORK_HOURS_IN_WEEK);
 
             if (now >= finishTime) {
               calculations.earnedToday = (hourlyRate * totalTime).toFixed(2);
