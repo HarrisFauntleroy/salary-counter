@@ -31,33 +31,55 @@
         <h1>Real-Time Salary Calculator</h1>
         <label for="salary">Enter your annual salary:</label>
         <input type="number" id="salary" placeholder="Annual Salary">
+
+        <label for="startTime">Enter your work start time (HH:MM):</label>
+        <input type="time" id="startTime">
+
         <h2>Breakdown</h2>
         <p>Monthly: <span id="monthly"></span></p>
         <p>Weekly: <span id="weekly"></span></p>
         <p>Daily: <span id="daily"></span></p>
         <p>Hourly: <span id="hourly"></span></p>
+        <p>Earned Today: <span id="earnedToday"></span></p>
     </div>
+
     <script>
         const salaryInput = document.getElementById('salary');
-        const outputFields = ['monthly', 'weekly', 'daily', 'hourly'];
-
-        salaryInput.addEventListener('input', function() {
-            let annualSalary = parseFloat(this.value);
-
+        const startTimeInput = document.getElementById('startTime');
+        const outputFields = ['monthly', 'weekly', 'daily', 'hourly', 'earnedToday'];
+    
+        function updateCalculations() {
+            let annualSalary = parseFloat(salaryInput.value);
+    
             if (isNaN(annualSalary)) {
                 outputFields.forEach(field => document.getElementById(field).textContent = 'Invalid input');
                 return;
             }
-
+    
+            const hourlyRate = annualSalary / (52 * 40);
             const calculations = {
                 monthly: (annualSalary / 12).toFixed(2),
                 weekly: (annualSalary / 52).toFixed(2),
                 daily: (annualSalary / 365).toFixed(2),
-                hourly: (annualSalary / (52 * 40)).toFixed(2)  // Assuming a 40-hour work week
+                hourly: hourlyRate.toFixed(2)
             };
-
+    
+            const now = new Date();
+            const startTime = new Date();
+            const [hours, minutes] = startTimeInput.value.split(":");
+            startTime.setHours(hours, minutes, 0, 0);
+    
+            const elapsedTime = Math.max(0, now - startTime);
+            calculations.earnedToday = (elapsedTime / (1000 * 60 * 60) * hourlyRate).toFixed(2);
+    
             outputFields.forEach(field => document.getElementById(field).textContent = `$${calculations[field]}`);
-        });
+        }
+    
+        salaryInput.addEventListener('input', updateCalculations);
+        startTimeInput.addEventListener('input', updateCalculations);
+    
+        // Call updateCalculations every second (1000 milliseconds)
+        setInterval(updateCalculations, 1000);
     </script>
 </body>
 </html>
