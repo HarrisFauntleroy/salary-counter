@@ -47,39 +47,47 @@
         const salaryInput = document.getElementById('salary');
         const startTimeInput = document.getElementById('startTime');
         const outputFields = ['monthly', 'weekly', 'daily', 'hourly', 'earnedToday'];
+
+        function calculateAndUpdateSalary() {
+            const annualSalary = parseFloat(salaryInput.value);
+            let calculations = {};
+
+            if (isNaN(annualSalary) || annualSalary <= 0) {
+                ['monthly', 'weekly', 'daily', 'hourly'].forEach(field => {
+                    document.getElementById(field).textContent = 'Invalid input';
+                });
+            } else {
+                const hourlyRate = annualSalary / (52 * 40);
+                calculations = {
+                    monthly: (annualSalary / 12).toFixed(2),
+                    weekly: (annualSalary / 52).toFixed(2),
+                    daily: (annualSalary / 365).toFixed(2),
+                    hourly: hourlyRate.toFixed(2)
+                };
+
+                if (startTimeInput.value !== '') {
+                    const now = new Date();
+                    const startTime = new Date();
+                    const [hours, minutes] = startTimeInput.value.split(":");
+                    startTime.setHours(hours, minutes, 0, 0);
     
-        function updateCalculations() {
-            let annualSalary = parseFloat(salaryInput.value);
-    
-            if (isNaN(annualSalary)) {
-                outputFields.forEach(field => document.getElementById(field).textContent = 'Invalid input');
-                return;
+                    const elapsedTime = Math.max(0, now - startTime);
+                    calculations.earnedToday = (elapsedTime / (1000 * 60 * 60) * hourlyRate).toFixed(2);
+                } else {
+                    calculations.earnedToday = 'N/A';
+                }
             }
-    
-            const hourlyRate = annualSalary / (52 * 40);
-            const calculations = {
-                monthly: (annualSalary / 12).toFixed(2),
-                weekly: (annualSalary / 52).toFixed(2),
-                daily: (annualSalary / 365).toFixed(2),
-                hourly: hourlyRate.toFixed(2)
-            };
-    
-            const now = new Date();
-            const startTime = new Date();
-            const [hours, minutes] = startTimeInput.value.split(":");
-            startTime.setHours(hours, minutes, 0, 0);
-    
-            const elapsedTime = Math.max(0, now - startTime);
-            calculations.earnedToday = (elapsedTime / (1000 * 60 * 60) * hourlyRate).toFixed(2);
-    
-            outputFields.forEach(field => document.getElementById(field).textContent = `$${calculations[field]}`);
+
+            outputFields.forEach(field => {
+                const value = calculations[field];
+                document.getElementById(field).textContent = value !== undefined ? `$${value}` : 'N/A';
+            });
         }
-    
-        salaryInput.addEventListener('input', updateCalculations);
-        startTimeInput.addEventListener('input', updateCalculations);
-    
-        // Call updateCalculations every second (1000 milliseconds)
-        setInterval(updateCalculations, 1000);
+
+        salaryInput.addEventListener('input', calculateAndUpdateSalary);
+        startTimeInput.addEventListener('input', calculateAndUpdateSalary);
+
+        setInterval(calculateAndUpdateSalary, 1000);
     </script>
 </body>
 </html>
