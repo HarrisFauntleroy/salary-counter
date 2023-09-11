@@ -9,40 +9,58 @@
         --main-bg-color: #f3f4f6;
         --container-bg-color: #fff;
       }
-        * {
-            box-sizing: border-box;
-        }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         height: 100vh;
         width: 100vw;
         font-family: "Arial", sans-serif;
         background-color: var(--main-bg-color);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-content: center;
+        display: grid;
+        place-content: center;
       }
+
       .container {
-        margin: auto;
-        max-width: 400px;
+        max-width: 350px;
         background-color: var(--container-bg-color);
         padding: 16px;
         border-radius: 5px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
       }
+
       label,
       input,
       h1,
       h2 {
         margin-bottom: 16px;
       }
+
       input {
         width: 100%;
         padding: 8px;
         box-sizing: border-box;
       }
+
+      .progress-container {
+        width: 100%;
+        background-color: #ccc;
+        margin-top: 20px;
+      }
+
+      .progress {
+        width: 0%;
+        height: 30px;
+        background-color: #4caf50;
+        text-align: center;
+        line-height: 30px;
+        color: white;
+      }
     </style>
   </head>
+
   <body>
     <div class="container">
       <h1>Real-Time Salary Calculator</h1>
@@ -68,6 +86,10 @@
       <p>Daily: <span id="daily"></span></p>
       <p>Hourly: <span id="hourly"></span></p>
       <p>Earned Today: <span id="earnedToday"></span></p>
+
+      <div id="progressBarContainer" class="progress-container">
+        <div id="progressBar" class="progress"></div>
+      </div>
     </div>
 
     <script>
@@ -132,6 +154,10 @@
               ),
               totalTime
             );
+
+            const progressBar = document.getElementById("progressBar");
+            const percentageComplete = (elapsedTime / totalTime) * 100;
+            progressBar.style.width = percentageComplete + "%";
 
             const hourlyRate =
               annualSalary / (WEEKS_IN_YEAR * WORK_HOURS_IN_WEEK);
