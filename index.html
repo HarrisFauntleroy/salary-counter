@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Salary Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Real-Time Salary Calculator</h1>
+    
+    <label for="salary">Enter your annual salary:</label>
+    <input type="number" id="salary" placeholder="Annual Salary">
+    
+    <h2>Breakdown</h2>
+    <p>Monthly: <span id="monthly"></span></p>
+    <p>Weekly: <span id="weekly"></span></p>
+    <p>Daily: <span id="daily"></span></p>
+    <p>Hourly: <span id="hourly"></span></p>
+</div>
+
+<script>
+    document.getElementById('salary').addEventListener('input', function() {
+        let annualSalary = parseFloat(this.value);
+        
+        if (isNaN(annualSalary)) {
+            document.getElementById('monthly').textContent = 'Invalid input';
+            document.getElementById('weekly').textContent = 'Invalid input';
+            document.getElementById('daily').textContent = 'Invalid input';
+            document.getElementById('hourly').textContent = 'Invalid input';
+            return;
+        }
+        
+        let monthly = (annualSalary / 12).toFixed(2);
+        let weekly = (annualSalary / 52).toFixed(2);
+        let daily = (annualSalary / 365).toFixed(2);
+        let hourly = (annualSalary / (52 * 40)).toFixed(2); // Assuming a 40-hour work week
+        
+        document.getElementById('monthly').textContent = '$' + monthly;
+        document.getElementById('weekly').textContent = '$' + weekly;
+        document.getElementById('daily').textContent = '$' + daily;
+        document.getElementById('hourly').textContent = '$' + hourly;
+    });
+</script>
+
+</body>
+</html>
