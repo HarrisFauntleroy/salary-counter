@@ -1,93 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Real-Time Salary Calculator</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f3f4f6;
-        }
-        .container {
-            margin: 20px auto;
-            max-width: 400px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        label, input, h1, h2 {
-            margin-bottom: 10px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f3f4f6;
+      }
+      .container {
+        margin: 20px auto;
+        max-width: 400px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+      label,
+      input,
+      h1,
+      h2 {
+        margin-bottom: 10px;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>Real-Time Salary Calculator</h1>
-        <label for="salary">Enter your annual salary:</label>
-        <input type="number" id="salary" placeholder="Annual Salary" value="60000">
+      <h1>Real-Time Salary Calculator</h1>
+      <label for="salary">Enter your annual salary:</label>
+      <input
+        type="number"
+        id="salary"
+        placeholder="Annual Salary"
+        value="60000"
+      />
 
-        <label for="startTime">Enter your work start time (HH:MM):</label>
-        <input type="time" id="startTime" value="09:00">
+      <label for="startTime">Enter your work start time (HH:MM):</label>
+      <input type="time" id="startTime" value="09:00" />
 
-        <h2>Breakdown</h2>
-        <p>Monthly: <span id="monthly"></span></p>
-        <p>Weekly: <span id="weekly"></span></p>
-        <p>Daily: <span id="daily"></span></p>
-        <p>Hourly: <span id="hourly"></span></p>
-        <p>Earned Today: <span id="earnedToday"></span></p>
+      <label for="finishTime">Enter your work finish time (HH:MM):</label>
+      <input type="time" id="finishTime" value="17:00" />
+
+      <h2>Breakdown</h2>
+      <p>Monthly: <span id="monthly"></span></p>
+      <p>Weekly: <span id="weekly"></span></p>
+      <p>Daily: <span id="daily"></span></p>
+      <p>Hourly: <span id="hourly"></span></p>
+      <p>Earned Today: <span id="earnedToday"></span></p>
     </div>
 
     <script>
-        const salaryInput = document.getElementById('salary');
-        const startTimeInput = document.getElementById('startTime');
-        const outputFields = ['monthly', 'weekly', 'daily', 'hourly', 'earnedToday'];
+      const salaryInput = document.getElementById("salary");
+      const startTimeInput = document.getElementById("startTime");
+      const finishTimeInput = document.getElementById("finishTime");
+      const outputFields = [
+        "monthly",
+        "weekly",
+        "daily",
+        "hourly",
+        "earnedToday",
+      ];
 
-        function calculateAndUpdateSalary() {
-            const annualSalary = parseFloat(salaryInput.value);
-            let calculations = {};
+      function calculateAndUpdateSalary() {
+        const annualSalary = parseFloat(salaryInput.value);
+        let calculations = {};
 
-            if (isNaN(annualSalary) || annualSalary <= 0) {
-                ['monthly', 'weekly', 'daily', 'hourly'].forEach(field => {
-                    document.getElementById(field).textContent = 'Invalid input';
-                });
+        if (isNaN(annualSalary) || annualSalary <= 0) {
+          ["monthly", "weekly", "daily", "hourly"].forEach((field) => {
+            document.getElementById(field).textContent = "Invalid input";
+          });
+        } else {
+          const hourlyRate = annualSalary / (52 * 40);
+          calculations = {
+            monthly: (annualSalary / 12).toFixed(2),
+            weekly: (annualSalary / 52).toFixed(2),
+            daily: (annualSalary / 365).toFixed(2),
+            hourly: hourlyRate.toFixed(2),
+          };
+
+          if (startTimeInput.value !== "" && finishTimeInput.value !== "") {
+            const now = new Date();
+            const startTime = new Date(now);
+            const finishTime = new Date(now);
+
+            const [startHours, startMinutes] = startTimeInput.value.split(":");
+            const [finishHours, finishMinutes] =
+              finishTimeInput.value.split(":");
+
+            startTime.setHours(startHours, startMinutes, 0, 0);
+            finishTime.setHours(finishHours, finishMinutes, 0, 0);
+
+            const totalTime = (finishTime - startTime) / (1000 * 60 * 60);
+
+            const elapsedTime = Math.min(
+              Math.max(0, (now - startTime) / (1000 * 60 * 60)),
+              totalTime
+            );
+
+            const hourlyRate = annualSalary / (52 * 40);
+
+            if (now >= finishTime) {
+              calculations.earnedToday = (hourlyRate * totalTime).toFixed(2);
             } else {
-                const hourlyRate = annualSalary / (52 * 40);
-                calculations = {
-                    monthly: (annualSalary / 12).toFixed(2),
-                    weekly: (annualSalary / 52).toFixed(2),
-                    daily: (annualSalary / 365).toFixed(2),
-                    hourly: hourlyRate.toFixed(2)
-                };
-
-                if (startTimeInput.value !== '') {
-                    const now = new Date();
-                    const startTime = new Date();
-                    const [hours, minutes] = startTimeInput.value.split(":");
-                    startTime.setHours(hours, minutes, 0, 0);
-    
-                    const elapsedTime = Math.max(0, now - startTime);
-                    calculations.earnedToday = (elapsedTime / (1000 * 60 * 60) * hourlyRate).toFixed(2);
-                } else {
-                    calculations.earnedToday = 'N/A';
-                }
+              calculations.earnedToday = (hourlyRate * elapsedTime).toFixed(2);
             }
-
-            outputFields.forEach(field => {
-                const value = calculations[field];
-                document.getElementById(field).textContent = value !== undefined ? `$${value}` : 'N/A';
-            });
+          } else {
+            calculations.earnedToday = "N/A";
+          }
         }
 
-        salaryInput.addEventListener('input', calculateAndUpdateSalary);
-        startTimeInput.addEventListener('input', calculateAndUpdateSalary);
+        outputFields.forEach((field) => {
+          const value = calculations[field];
+          document.getElementById(field).textContent =
+            value !== undefined ? `$${value}` : "N/A";
+        });
+      }
 
-        setInterval(calculateAndUpdateSalary, 1000);
+      salaryInput.addEventListener("input", calculateAndUpdateSalary);
+      startTimeInput.addEventListener("input", calculateAndUpdateSalary);
+      finishTimeInput.addEventListener("input", calculateAndUpdateSalary);
+
+      setInterval(calculateAndUpdateSalary, 1000);
     </script>
-</body>
+  </body>
 </html>
