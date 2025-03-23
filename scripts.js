@@ -5,8 +5,6 @@ const tabContents = document.querySelectorAll(".tab-content");
 const salaryInput = document.getElementById("salary");
 const startTimeInput = document.getElementById("startTime");
 const endTimeInput = document.getElementById("endTime");
-const workDaysPerWeekInput = document.getElementById("workDaysPerWeek");
-const workHoursPerDayInput = document.getElementById("workHoursPerDay");
 const vacationDaysInput = document.getElementById("vacationDays");
 const breakTimeInput = document.getElementById("breakTime");
 const taxRateInput = document.getElementById("taxRate");
@@ -23,6 +21,9 @@ const newProfileForm = document.getElementById("newProfileForm");
 const profileNameInput = document.getElementById("profileName");
 const saveProfileBtn = document.getElementById("saveProfileBtn");
 const cancelProfileBtn = document.getElementById("cancelProfileBtn");
+
+// Get workHoursPerWeekInput after the DOM is fully loaded to avoid null reference
+let workHoursPerWeekInput = document.getElementById("workHoursPerWeek");
 
 // Dashboard elements
 const earnedTodayElement = document.getElementById("earnedToday");
@@ -56,8 +57,7 @@ let settings = {
   salary: 60000,
   startTime: "09:00",
   endTime: "17:00",
-  workDaysPerWeek: 5,
-  workHoursPerDay: 8,
+  workHoursPerWeek: 38, // New setting replacing workDaysPerWeek and workHoursPerDay
   vacationDays: 15,
   breakTime: 60,
   taxRate: 20,
@@ -80,12 +80,33 @@ let lastEarned = 0;
 
 // Initialize
 function init() {
+  // Make sure we first load settings before attempting to apply them
   loadSettings();
-  applySettings();
-  setupEventListeners();
-  updateCalculations();
-  startRealTimeUpdates();
-  updateCurrentDate();
+
+  // Ensure DOM is fully loaded before trying to access elements
+  document.addEventListener("DOMContentLoaded", function () {
+    // Re-fetch the workHoursPerWeekInput element
+    workHoursPerWeekInput = document.getElementById("workHoursPerWeek");
+    applySettings();
+    setupEventListeners();
+    updateCalculations();
+    startRealTimeUpdates();
+    updateCurrentDate();
+  });
+
+  // If DOM is already loaded, run these functions immediately
+  if (
+    document.readyState === "complete" ||
+    document.readyState === "interactive"
+  ) {
+    // Re-fetch the workHoursPerWeekInput element
+    workHoursPerWeekInput = document.getElementById("workHoursPerWeek");
+    applySettings();
+    setupEventListeners();
+    updateCalculations();
+    startRealTimeUpdates();
+    updateCurrentDate();
+  }
 }
 
 // Load settings from localStorage
@@ -104,6 +125,18 @@ function loadSettings() {
     }
 
     settings = { ...profiles[currentProfile] };
+
+    // Handle legacy settings that used workDaysPerWeek and workHoursPerDay
+    if (
+      settings.workDaysPerWeek &&
+      settings.workHoursPerDay &&
+      !settings.workHoursPerWeek
+    ) {
+      settings.workHoursPerWeek =
+        settings.workDaysPerWeek * settings.workHoursPerDay;
+      delete settings.workDaysPerWeek;
+      delete settings.workHoursPerDay;
+    }
   }
 
   updateProfileDropdown();
@@ -123,32 +156,46 @@ function saveSettings() {
 
 // Apply settings to UI
 function applySettings() {
-  salaryInput.value = settings.salary;
-  startTimeInput.value = settings.startTime;
-  endTimeInput.value = settings.endTime;
-  workDaysPerWeekInput.value = settings.workDaysPerWeek;
-  workHoursPerDayInput.value = settings.workHoursPerDay;
-  vacationDaysInput.value = settings.vacationDays;
-  breakTimeInput.value = settings.breakTime;
-  taxRateInput.value = settings.taxRate;
-  currencySelect.value = settings.currency;
-  showParticlesCheckbox.checked = settings.showParticles;
-  showMilestonesCheckbox.checked = settings.showMilestones;
-  updateFrequencyInput.value = settings.updateFrequency;
-  roundNumbersCheckbox.checked = settings.roundNumbers;
+  if (salaryInput) salaryInput.value = settings.salary;
+  if (startTimeInput) startTimeInput.value = settings.startTime;
+  if (endTimeInput) endTimeInput.value = settings.endTime;
+  // Safely set workHoursPerWeekInput value only if the element exists
+  if (workHoursPerWeekInput)
+    workHoursPerWeekInput.value = settings.workHoursPerWeek;
+  if (vacationDaysInput) vacationDaysInput.value = settings.vacationDays;
+  if (breakTimeInput) breakTimeInput.value = settings.breakTime;
+  if (taxRateInput) taxRateInput.value = settings.taxRate;
+  if (currencySelect) currencySelect.value = settings.currency;
+  if (showParticlesCheckbox)
+    showParticlesCheckbox.checked = settings.showParticles;
+  if (showMilestonesCheckbox)
+    showMilestonesCheckbox.checked = settings.showMilestones;
+  if (updateFrequencyInput)
+    updateFrequencyInput.value = settings.updateFrequency;
+  if (roundNumbersCheckbox)
+    roundNumbersCheckbox.checked = settings.roundNumbers;
 
-  document
-    .querySelector("html")
-    .setAttribute("data-theme", settings.darkMode ? "dark" : "light");
-  themeToggle.innerHTML = settings.darkMode
-    ? '<i class="fas fa-sun"></i>'
-    : '<i class="fas fa-moon"></i>';
+  const htmlElement = document.querySelector("html");
+  if (htmlElement) {
+    htmlElement.setAttribute(
+      "data-theme",
+      settings.darkMode ? "dark" : "light",
+    );
+  }
+
+  if (themeToggle) {
+    themeToggle.innerHTML = settings.darkMode
+      ? '<i class="fas fa-sun"></i>'
+      : '<i class="fas fa-moon"></i>';
+  }
 
   updateTimeDisplay();
 }
 
 // Update time display elements
 function updateTimeDisplay() {
+  if (!startTimeDisplayElement || !endTimeDisplayElement) return;
+
   const formatTime = (timeString) => {
     const [hours, minutes] = timeString.split(":");
     const date = new Date();
@@ -166,16 +213,18 @@ function updateTimeDisplay() {
 // Setup event listeners
 function setupEventListeners() {
   // Theme toggle
-  themeToggle.addEventListener("click", () => {
-    settings.darkMode = !settings.darkMode;
-    document
-      .querySelector("html")
-      .setAttribute("data-theme", settings.darkMode ? "dark" : "light");
-    themeToggle.innerHTML = settings.darkMode
-      ? '<i class="fas fa-sun"></i>'
-      : '<i class="fas fa-moon"></i>';
-    saveSettings();
-  });
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      settings.darkMode = !settings.darkMode;
+      document
+        .querySelector("html")
+        .setAttribute("data-theme", settings.darkMode ? "dark" : "light");
+      themeToggle.innerHTML = settings.darkMode
+        ? '<i class="fas fa-sun"></i>'
+        : '<i class="fas fa-moon"></i>';
+      saveSettings();
+    });
+  }
 
   // Tabs
   tabs.forEach((tab) => {
@@ -188,81 +237,73 @@ function setupEventListeners() {
   });
 
   // Save settings button
-  saveSettingsBtn.addEventListener("click", () => {
-    settings.salary = parseFloat(salaryInput.value);
-    settings.startTime = startTimeInput.value;
-    settings.endTime = endTimeInput.value;
-    settings.workDaysPerWeek = parseInt(workDaysPerWeekInput.value, 10);
-    settings.workHoursPerDay = parseFloat(workHoursPerDayInput.value);
-    settings.vacationDays = parseInt(vacationDaysInput.value, 10);
-    settings.breakTime = parseInt(breakTimeInput.value, 10);
-    settings.taxRate = parseFloat(taxRateInput.value);
-    settings.currency = currencySelect.value;
-    settings.showParticles = showParticlesCheckbox.checked;
-    settings.showMilestones = showMilestonesCheckbox.checked;
-    settings.updateFrequency = parseFloat(updateFrequencyInput.value);
-    settings.roundNumbers = roundNumbersCheckbox.checked;
-
-    saveSettings();
-    updateCalculations();
-    updateTimeDisplay();
-    restartRealTimeUpdates();
-
-    // Switch to dashboard
-    tabs[0].click();
-  });
+  if (saveSettingsBtn) {
+    saveSettingsBtn.addEventListener("click", saveSettingsHandler);
+  }
 
   // Profile management
-  profileSelect.addEventListener("change", () => {
-    currentProfile = profileSelect.value;
-    settings = { ...profiles[currentProfile] };
-    applySettings();
-    updateCalculations();
-    restartRealTimeUpdates();
-    saveSettings();
-  });
-
-  addProfileBtn.addEventListener("click", () => {
-    newProfileForm.style.display = "block";
-  });
-
-  saveProfileBtn.addEventListener("click", () => {
-    const profileName = profileNameInput.value.trim();
-    if (profileName) {
-      // Create new profile with current settings
-      profiles[profileName] = { ...settings };
-      currentProfile = profileName;
-      saveSettings();
-      updateProfileDropdown();
-      newProfileForm.style.display = "none";
-      profileNameInput.value = "";
-    }
-  });
-
-  cancelProfileBtn.addEventListener("click", () => {
-    newProfileForm.style.display = "none";
-    profileNameInput.value = "";
-  });
-
-  deleteProfileBtn.addEventListener("click", () => {
-    if (
-      currentProfile !== "default" &&
-      confirm(`Delete profile "${currentProfile}"?`)
-    ) {
-      delete profiles[currentProfile];
-      currentProfile = "default";
+  if (profileSelect) {
+    profileSelect.addEventListener("change", () => {
+      currentProfile = profileSelect.value;
       settings = { ...profiles[currentProfile] };
-      saveSettings();
-      updateProfileDropdown();
       applySettings();
       updateCalculations();
       restartRealTimeUpdates();
-    }
-  });
+      saveSettings();
+    });
+  }
+
+  if (addProfileBtn) {
+    addProfileBtn.addEventListener("click", () => {
+      newProfileForm.style.display = "block";
+    });
+  }
+
+  if (saveProfileBtn) {
+    saveProfileBtn.addEventListener("click", () => {
+      const profileName = profileNameInput.value.trim();
+      if (profileName) {
+        // Create new profile with current settings
+        profiles[profileName] = { ...settings };
+        currentProfile = profileName;
+        saveSettings();
+        updateProfileDropdown();
+        newProfileForm.style.display = "none";
+        profileNameInput.value = "";
+      }
+    });
+  }
+
+  if (cancelProfileBtn) {
+    cancelProfileBtn.addEventListener("click", () => {
+      newProfileForm.style.display = "none";
+      profileNameInput.value = "";
+    });
+  }
+
+  if (deleteProfileBtn) {
+    deleteProfileBtn.addEventListener("click", () => {
+      if (
+        currentProfile !== "default" &&
+        confirm(`Delete profile "${currentProfile}"?`)
+      ) {
+        delete profiles[currentProfile];
+        currentProfile = "default";
+        settings = { ...profiles[currentProfile] };
+        saveSettings();
+        updateProfileDropdown();
+        applySettings();
+        updateCalculations();
+        restartRealTimeUpdates();
+      }
+    });
+  }
 }
 
 // Update profile dropdown
 function updateProfileDropdown() {
+  if (!profileSelect) return;
+
   profileSelect.innerHTML = "";
   Object.keys(profiles).forEach((profile) => {
     const option = document.createElement("option");
@@ -275,22 +316,81 @@ function updateProfileDropdown() {
   });
 }
 
-// Update calculations
+// Save settings handler
+function saveSettingsHandler() {
+  // Make sure we re-fetch workHoursPerWeekInput
+  workHoursPerWeekInput = document.getElementById("workHoursPerWeek");
+
+  if (salaryInput) settings.salary = parseFloat(salaryInput.value);
+  if (startTimeInput) settings.startTime = startTimeInput.value;
+  if (endTimeInput) settings.endTime = endTimeInput.value;
+  if (workHoursPerWeekInput)
+    settings.workHoursPerWeek = parseFloat(workHoursPerWeekInput.value);
+  if (vacationDaysInput)
+    settings.vacationDays = parseInt(vacationDaysInput.value, 10);
+  if (breakTimeInput) settings.breakTime = parseInt(breakTimeInput.value, 10);
+  if (taxRateInput) settings.taxRate = parseFloat(taxRateInput.value);
+  if (currencySelect) settings.currency = currencySelect.value;
+  if (showParticlesCheckbox)
+    settings.showParticles = showParticlesCheckbox.checked;
+  if (showMilestonesCheckbox)
+    settings.showMilestones = showMilestonesCheckbox.checked;
+  if (updateFrequencyInput)
+    settings.updateFrequency = parseFloat(updateFrequencyInput.value);
+  if (roundNumbersCheckbox)
+    settings.roundNumbers = roundNumbersCheckbox.checked;
+
+  saveSettings();
+  updateCalculations();
+  updateTimeDisplay();
+  restartRealTimeUpdates();
+
+  // Switch to dashboard
+  tabs[0].click();
+}
+
+// Updated calculations using work hours per week
 function updateCalculations() {
   const salary = settings.salary;
-  const workDaysPerWeek = settings.workDaysPerWeek;
-  const workDaysPerYear = workDaysPerWeek * 52 - settings.vacationDays;
-  const workHoursPerDay = settings.workHoursPerDay - settings.breakTime / 60;
-  const workHoursPerWeek = workHoursPerDay * workDaysPerWeek;
-  const workHoursPerYear = workHoursPerDay * workDaysPerYear;
+  const workHoursPerWeek = settings.workHoursPerWeek;
 
-  const hourlyRate = salary / workHoursPerYear;
-  const dailyRate = hourlyRate * workHoursPerDay;
-  const weeklyRate = dailyRate * workDaysPerWeek;
+  // Calculate work days and hours for internal use
+  // We'll use 5 days as standard work week for vacation purposes
+  const standardWorkDays = 5;
+  const hoursPerDay = workHoursPerWeek / standardWorkDays;
+
+  // Calculate annual work weeks (52 - vacation weeks)
+  const vacationWeeks = settings.vacationDays / standardWorkDays;
+  const workWeeksPerYear = 52 - vacationWeeks;
+
+  // Calculate total annual work hours
+  const totalAnnualWorkHours = workWeeksPerYear * workHoursPerWeek;
+
+  // Calculate daily break time impact (proportional to work day)
+  const breakTimeHours = settings.breakTime / 60;
+  const breakProportion = breakTimeHours / hoursPerDay;
+  const effectiveHoursPerWeek = workHoursPerWeek * (1 - breakProportion);
+
+  // Calculate effective annual hours
+  const effectiveAnnualHours = workWeeksPerYear * effectiveHoursPerWeek;
+
+  // Calculate hourly rate
+  const hourlyRate = salary / effectiveAnnualHours;
+
+  // Calculate daily rate (based on effective hours per day)
+  const effectiveHoursPerDay = effectiveHoursPerWeek / standardWorkDays;
+  const dailyRate = hourlyRate * effectiveHoursPerDay;
+
+  // Calculate weekly rate
+  const weeklyRate = dailyRate * standardWorkDays;
+
+  // Calculate monthly rate (salary / 12)
   const monthlyRate = salary / 12;
+
+  // Calculate per-minute rate
   const minuteRate = hourlyRate / 60;
 
-  // Calculate tax more accurately using tax brackets if available
+  // Calculate after-tax earnings based on Australian tax brackets or simple rate
   let afterTaxRate;
 
   if (settings.currency === "A$" && salary > 0) {
@@ -299,26 +399,27 @@ function updateCalculations() {
       { threshold: 0, rate: 0 },
       { threshold: 18200, rate: 0.19 },
       { threshold: 45000, rate: 0.3 },
-      { threshold: 135000, rate: 0.37 },
-      { threshold: 190000, rate: 0.45 },
+      { threshold: 120000, rate: 0.37 },
+      { threshold: 180000, rate: 0.45 },
     ];
 
     let tax = 0;
-    let prev = 0;
 
+    // Apply tax brackets correctly
     for (let i = 1; i < taxBrackets.length; i++) {
-      if (salary > taxBrackets[i].threshold) {
-        tax +=
-          (Math.min(salary, taxBrackets[i].threshold) -
-            taxBrackets[i - 1].threshold) *
-          taxBrackets[i - 1].rate;
-        prev = taxBrackets[i].threshold;
-      } else {
-        tax += (salary - prev) * taxBrackets[i - 1].rate;
-        break;
+      const prevThreshold = taxBrackets[i - 1].threshold;
+      const currThreshold = taxBrackets[i].threshold;
+
+      if (salary > prevThreshold) {
+        const taxableInBracket =
+          Math.min(salary, currThreshold) - prevThreshold;
+        tax += taxableInBracket * taxBrackets[i - 1].rate;
       }
+
+      if (salary <= currThreshold) break;
     }
 
+    // Apply tax to amount exceeding highest bracket
     if (salary > taxBrackets[taxBrackets.length - 1].threshold) {
       tax +=
         (salary - taxBrackets[taxBrackets.length - 1].threshold) *
@@ -328,13 +429,15 @@ function updateCalculations() {
     // Add Medicare levy (2% for Australia)
     const medicareLevy = salary * 0.02;
 
+    // Calculate annual after-tax income
     const annualAfterTax = salary - tax - medicareLevy;
     afterTaxRate = annualAfterTax / 12;
   } else {
-    // Fallback to simple flat tax rate calculation
+    // Simple tax calculation for other currencies
     afterTaxRate = monthlyRate * (1 - settings.taxRate / 100);
   }
 
+  // Format currency values
   const formatCurrency = (value) => {
     if (settings.roundNumbers) {
       return `${settings.currency}${Math.round(value).toLocaleString()}`;
@@ -342,12 +445,32 @@ function updateCalculations() {
     return `${settings.currency}${value.toFixed(2)}`;
   };
 
-  hourlyRateElement.textContent = formatCurrency(hourlyRate);
-  dailyEarningsElement.textContent = formatCurrency(dailyRate);
-  weeklyEarningsElement.textContent = formatCurrency(weeklyRate);
-  monthlyEarningsElement.textContent = formatCurrency(monthlyRate);
-  afterTaxEarningsElement.textContent = formatCurrency(afterTaxRate);
-  minuteEarningsElement.textContent = formatCurrency(minuteRate);
+  // Update UI with calculated values
+  if (hourlyRateElement)
+    hourlyRateElement.textContent = formatCurrency(hourlyRate);
+  if (dailyEarningsElement)
+    dailyEarningsElement.textContent = formatCurrency(dailyRate);
+  if (weeklyEarningsElement)
+    weeklyEarningsElement.textContent = formatCurrency(weeklyRate);
+  if (monthlyEarningsElement)
+    monthlyEarningsElement.textContent = formatCurrency(monthlyRate);
+  if (afterTaxEarningsElement)
+    afterTaxEarningsElement.textContent = formatCurrency(afterTaxRate);
+  if (minuteEarningsElement)
+    minuteEarningsElement.textContent = formatCurrency(minuteRate);
+
+  // Store these calculations for use in real-time updates
+  settings.calculatedValues = {
+    hourlyRate,
+    dailyRate,
+    weeklyRate,
+    monthlyRate,
+    afterTaxRate,
+    minuteRate,
+    hoursPerDay,
+    effectiveHoursPerDay,
+    standardWorkDays,
+  };
 }
 
 // Start real-time updates
@@ -377,8 +500,11 @@ function restartRealTimeUpdates() {
   updateRealTimeEarnings();
 }
 
-// Update real-time earnings
+// Update real-time earnings with simplified approach
 function updateRealTimeEarnings() {
+  if (!earnedTodayElement || !progressBarElement || !progressPercentageElement)
+    return;
+
   const now = new Date();
   const startTime = new Date(now);
   const endTime = new Date(now);
@@ -390,38 +516,28 @@ function updateRealTimeEarnings() {
   endTime.setHours(parseInt(endHour), parseInt(endMinute), 0, 0);
 
   // Check if current time is within working hours and it's a workday
-  // Consider workdays based on settings.workDaysPerWeek
   let isWorkday = false;
   const day = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
 
-  if (settings.workDaysPerWeek === 5) {
-    // Assume Monday-Friday for 5-day work week
-    isWorkday = day > 0 && day < 6;
-  } else if (settings.workDaysPerWeek === 6) {
-    // Assume Monday-Saturday for 6-day work week
-    isWorkday = day > 0 && day < 7;
-  } else if (settings.workDaysPerWeek === 7) {
-    // All days are workdays for 7-day work week
-    isWorkday = true;
-  } else if (settings.workDaysPerWeek > 0) {
-    // For other cases, start from Monday
-    isWorkday = day > 0 && day <= settings.workDaysPerWeek;
-  }
+  // We'll assume standard work days based on the weekly hours
+  // For 5-day work week (most common), we'll use Monday-Friday
+  isWorkday =
+    day > 0 && day <= (settings.calculatedValues?.standardWorkDays || 5);
 
-  if (!isWorkday) {
+  if (!isWorkday || !settings.calculatedValues) {
     earnedTodayElement.textContent = `${settings.currency}0.00`;
     progressBarElement.style.width = "0%";
     progressPercentageElement.textContent = "0%";
     return;
   }
 
-  // Calculate work duration
-  const totalWorkTimeInMs = endTime - startTime;
-  const workHoursPerDay = settings.workHoursPerDay - settings.breakTime / 60;
-  const effectiveWorkTimeInMs = workHoursPerDay * 60 * 60 * 1000;
+  // Calculate total scheduled work time (end time - start time)
+  const totalScheduledTimeInMs = endTime - startTime;
 
-  // Calculate elapsed work time
+  // Calculate elapsed time since work start
   let elapsedTimeInMs = now - startTime;
+
+  // Handle time before work starts or after work ends
   if (elapsedTimeInMs < 0) {
     // Before work starts
     earnedTodayElement.textContent = `${settings.currency}0.00`;
@@ -432,28 +548,33 @@ function updateRealTimeEarnings() {
 
   if (now > endTime) {
     // After work ends
-    elapsedTimeInMs = totalWorkTimeInMs;
+    elapsedTimeInMs = totalScheduledTimeInMs;
   }
 
-  // Calculate percentage complete
+  // Calculate percentage of workday completed
   const percentageComplete = Math.min(
     100,
-    (elapsedTimeInMs / totalWorkTimeInMs) * 100,
+    (elapsedTimeInMs / totalScheduledTimeInMs) * 100,
   );
   progressBarElement.style.width = `${percentageComplete}%`;
   progressPercentageElement.textContent = `${Math.round(percentageComplete)}%`;
 
-  // Calculate earnings
-  const workDaysPerYear = settings.workDaysPerWeek * 52 - settings.vacationDays;
-  const workHoursPerYear = workHoursPerDay * workDaysPerYear;
-  const salary = settings.salary;
-  const hourlyRate = salary / workHoursPerYear;
+  // Calculate elapsed work time accounting for breaks
+  // Work time is the scheduled work hours minus break time
+  const scheduledWorkDayHours = (endTime - startTime) / (1000 * 60 * 60);
+  const effectiveWorkDayHours = settings.calculatedValues.effectiveHoursPerDay;
 
-  // Account for breaks - assume break is evenly distributed
+  // Calculate work ratio (proportion of scheduled time that's actual work)
+  const workRatio = effectiveWorkDayHours / scheduledWorkDayHours;
+
+  // Calculate elapsed hours and apply work ratio to account for breaks
   const elapsedHours = elapsedTimeInMs / (1000 * 60 * 60);
-  const adjustedElapsedHours = Math.min(elapsedHours, workHoursPerDay);
+  const effectiveElapsedHours = elapsedHours * workRatio;
 
-  const earnedToday = hourlyRate * adjustedElapsedHours;
+  // Calculate earnings based on hourly rate
+  const earnedToday =
+    settings.calculatedValues.hourlyRate * effectiveElapsedHours;
+
   const formatCurrency = (value) => {
     if (settings.roundNumbers) {
       return `${settings.currency}${Math.round(value).toLocaleString()}`;
@@ -482,7 +603,7 @@ function updateRealTimeEarnings() {
 
 // Create money particle
 function createMoneyParticle(amount) {
-  if (!settings.showParticles) return;
+  if (!settings.showParticles || !particleContainer) return;
 
   const particle = document.createElement("div");
   particle.className = "money-particle";
@@ -499,13 +620,15 @@ function createMoneyParticle(amount) {
 
   // Remove particle after animation completes
   setTimeout(() => {
-    particleContainer.removeChild(particle);
+    if (particleContainer.contains(particle)) {
+      particleContainer.removeChild(particle);
+    }
   }, 3000);
 }
 
 // Check milestones
 function checkMilestones(earnedToday) {
-  if (!settings.showMilestones) return;
+  if (!settings.showMilestones || !milestoneElement) return;
 
   for (const milestone of MILESTONES) {
     if (
@@ -521,6 +644,8 @@ function checkMilestones(earnedToday) {
 
 // Show milestone notification
 function showMilestone(message) {
+  if (!milestoneElement) return;
+
   milestoneElement.innerHTML = `<i class="fas fa-trophy"></i> ${message}`;
   milestoneElement.style.display = "block";
 
@@ -531,6 +656,8 @@ function showMilestone(message) {
 
 // Update current date
 function updateCurrentDate() {
+  if (!currentDateElement) return;
+
   const now = new Date();
   const options = { weekday: "long", month: "short", day: "numeric" };
   currentDateElement.textContent = `(${now.toLocaleDateString(

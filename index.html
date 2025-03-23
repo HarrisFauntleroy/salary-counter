@@ -10,7 +10,6 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-
   <body>
     <div class="container">
       <header>
@@ -21,14 +20,12 @@
           <i class="fas fa-moon"></i>
         </button>
       </header>
-
       <div class="tab-container">
         <div class="tabs">
           <div class="tab active" data-tab="dashboard">Dashboard</div>
           <div class="tab" data-tab="settings">Settings</div>
           <div class="tab" data-tab="statistics">Statistics</div>
         </div>
-
         <div id="dashboard" class="tab-content active">
           <div class="today-container">
             <div class="today-label">
@@ -50,7 +47,6 @@
               <i class="fas fa-trophy"></i> You've earned enough for lunch!
             </div>
           </div>
-
           <div class="earnings-grid">
             <div class="earnings-item">
               <div class="earnings-label">
@@ -100,7 +96,6 @@
             </div>
           </div>
         </div>
-
         <div id="settings" class="tab-content">
           <div class="profile-selector">
             <select id="profileSelect">
@@ -115,7 +110,6 @@
               </button>
             </div>
           </div>
-
           <div id="newProfileForm" class="new-profile-form">
             <div class="input-group">
               <label for="profileName">Profile Name</label>
@@ -132,7 +126,6 @@
               Cancel
             </button>
           </div>
-
           <div class="settings-grid">
             <div class="card">
               <div class="card-title">
@@ -181,31 +174,19 @@
                 />
               </div>
             </div>
-
             <div class="card">
               <div class="card-title">
                 <i class="fas fa-calendar-alt"></i> Work Schedule
               </div>
               <div class="input-group">
-                <label for="workDaysPerWeek">Work Days Per Week</label>
+                <label for="workHoursPerWeek">Work Hours Per Week</label>
                 <input
                   type="number"
-                  id="workDaysPerWeek"
-                  placeholder="5"
-                  value="5"
+                  id="workHoursPerWeek"
+                  placeholder="38"
+                  value="38"
                   min="1"
-                  max="7"
-                />
-              </div>
-              <div class="input-group">
-                <label for="workHoursPerDay">Work Hours Per Day</label>
-                <input
-                  type="number"
-                  id="workHoursPerDay"
-                  placeholder="8"
-                  value="8"
-                  min="1"
-                  max="24"
+                  max="168"
                   step="0.5"
                 />
               </div>
@@ -221,7 +202,6 @@
                 />
               </div>
             </div>
-
             <div class="card">
               <div class="card-title">
                 <i class="fas fa-clock"></i> Daily Schedule
@@ -246,7 +226,6 @@
                 />
               </div>
             </div>
-
             <div class="card">
               <div class="card-title">
                 <i class="fas fa-cog"></i> Display Settings
@@ -277,16 +256,13 @@
               </div>
             </div>
           </div>
-
           <button id="saveSettings" class="save-button">Save Settings</button>
         </div>
-
         <div id="statistics" class="tab-content">
           <p>Statistics coming soon...</p>
         </div>
       </div>
     </div>
-
     <script src="scripts.js"></script>
   </body>
 </html>
